@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.Manifest;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
     TextView textviewLatitude;
@@ -39,12 +38,19 @@ public class MainActivity extends AppCompatActivity {
         textviewLongtitude = findViewById(R.id.textView2);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+
+        }
+
         button_show.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            public void onClick(View v) {
+
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1, new LocationListener() {
                     @Override
@@ -53,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
                         textviewLongtitude.setText(String.valueOf(location.getLongitude()));
                     }
                 });
-            }
-        });
+                    }
+                });
     }
 }
 
